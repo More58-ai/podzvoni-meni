@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <script>
-        (async function checkKillSwitch() {
-            // Твій Bin ID з jsonbin.io
-            const binId = '69932c9443b1c97be983a09f'; 
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-                    headers: { 'X-Bin-Meta': 'false' }
-                });
-                const data = await res.json();
-                
-                // Якщо статус "active" став false — миттєво перекидаємо на Zara
-                if (data.active === false) {
-                    window.location.replace("https://www.zara.com/ua/");
-                }
-            } catch (e) { 
-                console.log('Checking status...'); 
-            }
-        })();
-    </script>
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDHuCboBzJT5Uc7Z6nLHekPoYFjO6GNHF8",
+        authDomain: "podzvoni-ee921.firebaseapp.com",
+        projectId: "podzvoni-ee921",
+        storageBucket: "podzvoni-ee921.firebasestorage.app",
+        messagingSenderId: "214583656309",
+        appId: "1:214583656309:web:789fb988cc4a775882dd3c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Слухаємо зміни в базі в реальному часі
+    onSnapshot(doc(db, "settings", "siteStatus"), (doc) => {
+        if (doc.exists() && doc.data().active === false) {
+            window.location.replace("https://www.zara.com/ua/");
+        }
+    });
+</script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
